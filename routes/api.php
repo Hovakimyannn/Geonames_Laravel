@@ -20,3 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/store',[MapController::class, 'store']);
+
+Route::get('/fill',[MapController::class, 'fill']);

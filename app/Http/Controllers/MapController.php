@@ -10,4 +10,12 @@ class MapController extends Controller
     {
         $content = File::get();
     }
+
+    public function fill()
+    {
+        $file = '../../../RU/';
+        var_dump($file);
+
+
+    }
 }
