@@ -10,4 +10,12 @@ class MapController extends Controller
     {
 
     }
+
+    public function fill()
+    {
+        $file = '../../../RU/';
+        var_dump($file);
+
+
+    }
 }

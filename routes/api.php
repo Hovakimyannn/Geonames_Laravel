@@ -19,4 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/store',[MapController::class, 'store']);
+//Route::post('/store',[MapController::class, 'store']);
+Route::get('/fill',[MapController::class, 'fill']);
