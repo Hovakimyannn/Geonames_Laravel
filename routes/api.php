@@ -19,6 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/grisha',[MapController::class, 'grisha']);
+Route::get('/read',[MapController::class, 'read']);
 
 Route::get('/getAllCache',[MapController::class, 'getAllFromRedis']);
