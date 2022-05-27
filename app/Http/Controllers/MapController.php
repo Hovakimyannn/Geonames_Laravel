@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Data;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class MapController extends Controller
@@ -50,5 +51,45 @@ class MapController extends Controller
         }
         $time_elapsed_secs = microtime(true) - $start;
         echo $time_elapsed_secs;
+    }
+
+
+    public function findNearCountries(Request $request)
+    {
+
+        $takesCountry = Data::find($request->id);
+        $takesCountrylatitude = deg2rad($takesCountry->latitude);
+        $takesCountrylongitude = deg2rad($takesCountry->longitude);
+
+        $earth_radius = 6371;
+
+        $datas = Data::all(['geoname_id', 'latitude', 'longitude']);
+        $arr = [];
+        foreach ($datas as $data) {
+            $latitude = deg2rad( $data->latitude);
+            $longitude = deg2rad($data->longitude);
+
+            $deltaLatitude = $takesCountrylatitude - $latitude;
+            $deltaLongitude = $takesCountrylongitude - $longitude;
+
+            $angle = 2 * asin(sqrt(pow(sin($deltaLatitude / 2), 2) +
+                    cos($takesCountrylatitude) * cos($latitude) * pow(sin($deltaLongitude / 2), 2)));
+
+
+            $distance = round($angle * $earth_radius,2);
+
+            $arr[] = [
+                'distance' => $distance,
+                'Country_id' => $data->geoname_id
+            ];
+        }
+
+        asort($arr);
+        $arr = array_slice($arr,1, 20);
+
+
+        echo "<pre>";
+        print_r($arr);
+
     }
 }
