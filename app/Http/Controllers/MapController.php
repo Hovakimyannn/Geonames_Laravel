@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class MapController extends Controller
 {
+
     public function read()
     {
-        $content = Storage::get('RU.txt');
+        $content = Storage::get('/public/geonamesData/RU.txt');
         $content = explode("\n", $content);
         array_pop($content);
         $arr = [];
@@ -20,11 +22,15 @@ class MapController extends Controller
         $this->store($arr);
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function store(array $data)
     {
         $start = microtime(true);
         $arr = [];
-        foreach ($data as $key=>$datum) {
+        foreach ($data as $key => $datum) {
             $arr[$key]['geoname_id'] = $datum[0];
             $arr[$key]['name'] = $datum[1];
             $arr[$key]['asciiname'] = $datum[2];
@@ -45,13 +51,14 @@ class MapController extends Controller
             $arr[$key]['timezone'] = $datum[17];
             $arr[$key]['modification_date'] = $datum[18];
         }
-        $arr = array_chunk($arr,3400);
+        $arr = array_chunk($arr, 3400);
         foreach ($arr as $item) {
             Data::insert($item);
         }
         $time_elapsed_secs = microtime(true) - $start;
         echo $time_elapsed_secs;
     }
+
 
 
     public function findNearCountries(Request $request)
@@ -66,7 +73,7 @@ class MapController extends Controller
         $datas = Data::all(['geoname_id', 'latitude', 'longitude']);
         $arr = [];
         foreach ($datas as $data) {
-            $latitude = deg2rad( $data->latitude);
+            $latitude = deg2rad($data->latitude);
             $longitude = deg2rad($data->longitude);
 
             $deltaLatitude = $takesCountrylatitude - $latitude;
@@ -76,7 +83,7 @@ class MapController extends Controller
                     cos($takesCountrylatitude) * cos($latitude) * pow(sin($deltaLongitude / 2), 2)));
 
 
-            $distance = round($angle * $earth_radius,2);
+            $distance = round($angle * $earth_radius, 2);
 
             $arr[] = [
                 'distance' => $distance,
@@ -85,11 +92,24 @@ class MapController extends Controller
         }
 
         asort($arr);
-        $arr = array_slice($arr,1, 20);
+        $arr = array_slice($arr, 1, 20);
 
 
         echo "<pre>";
         print_r($arr);
+    }
 
+
+    public function downloadZip()
+    {
+        $savedPath = storage_path('app/public/RU.zip');
+        copy('http://download.geonames.org/export/dump/RU.zip', $savedPath);
+        $zip = new ZipArchive;
+        if ($zip->open($savedPath)){
+            $zip->extractTo(Storage::path('/public/geonamesData')); // working in local but not in production on an external disk
+            $zip->close();
+            unlink($savedPath);
+        }
+        $this->read();
     }
 }
