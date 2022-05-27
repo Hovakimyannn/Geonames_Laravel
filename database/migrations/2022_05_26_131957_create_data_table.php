@@ -33,6 +33,7 @@ return new class extends Migration
             $table->integer('dem');
             $table->string('timezone',40);
             $table->date('modification_date');
+            $table->timestamps();
         });
     }
 
