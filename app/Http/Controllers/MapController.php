@@ -6,10 +6,14 @@ use App\Models\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
+use function MongoDB\BSON\toJSON;
 
 class MapController extends Controller
 {
 
+    /**
+     * @return void
+     */
     public function read()
     {
         $content = Storage::get('/public/geonamesData/RU.txt');
@@ -60,10 +64,12 @@ class MapController extends Controller
     }
 
 
-
+    /**
+     * @param Request $request
+     * @return array
+     */
     public function findNearCountries(Request $request)
     {
-
         $takesCountry = Data::find($request->id);
         $takesCountrylatitude = deg2rad($takesCountry->latitude);
         $takesCountrylongitude = deg2rad($takesCountry->longitude);
@@ -71,7 +77,8 @@ class MapController extends Controller
         $earth_radius = 6371;
 
         $datas = Data::all(['geoname_id', 'latitude', 'longitude']);
-        $arr = [];
+        $CountriesDatas = [];
+
         foreach ($datas as $data) {
             $latitude = deg2rad($data->latitude);
             $longitude = deg2rad($data->longitude);
@@ -85,21 +92,28 @@ class MapController extends Controller
 
             $distance = round($angle * $earth_radius, 2);
 
-            $arr[] = [
+            $CountriesDatas[] = [
                 'distance' => $distance,
-                'Country_id' => $data->geoname_id
+                'country_id' => $data->geoname_id
             ];
         }
 
-        asort($arr);
-        $arr = array_slice($arr, 1, 20);
+        asort($CountriesDatas);
+        $twelveNeighboringCountries = array_slice($CountriesDatas, 1, 20);
 
 
-        echo "<pre>";
-        print_r($arr);
+        foreach($twelveNeighboringCountries as $key => $data)
+        {
+            $countryName = Data::find($data['country_id']);
+            $twelveNeighboringCountries[$key]['countryName'] = $countryName->name;
+        }
+
+        return $twelveNeighboringCountries;
     }
 
-
+    /**
+     * @return void
+     */
     public function downloadZip()
     {
         $savedPath = storage_path('app/public/RU.zip');
