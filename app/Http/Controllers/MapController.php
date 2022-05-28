@@ -68,11 +68,11 @@ class MapController extends Controller
      * @param Request $request
      * @return array
      */
-    public function findNearCountries(Request $request)
+    public function findTwelveNeighboringCountries(Request $request)
     {
-        $takesCountry = Data::find($request->id);
-        $takesCountrylatitude = deg2rad($takesCountry->latitude);
-        $takesCountrylongitude = deg2rad($takesCountry->longitude);
+        $givenCountry = Data::find($request->id);
+        $givenCountryLatitude = deg2rad($givenCountry->latitude);
+        $givenCountryLongitude = deg2rad($givenCountry->longitude);
 
         $earth_radius = 6371;
 
@@ -83,11 +83,11 @@ class MapController extends Controller
             $latitude = deg2rad($data->latitude);
             $longitude = deg2rad($data->longitude);
 
-            $deltaLatitude = $takesCountrylatitude - $latitude;
-            $deltaLongitude = $takesCountrylongitude - $longitude;
+            $deltaLatitude = $givenCountryLatitude - $latitude;
+            $deltaLongitude = $givenCountryLongitude - $longitude;
 
             $angle = 2 * asin(sqrt(pow(sin($deltaLatitude / 2), 2) +
-                    cos($takesCountrylatitude) * cos($latitude) * pow(sin($deltaLongitude / 2), 2)));
+                    cos($givenCountryLatitude) * cos($latitude) * pow(sin($deltaLongitude / 2), 2)));
 
 
             $distance = round($angle * $earth_radius, 2);

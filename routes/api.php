@@ -21,7 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/read',[MapController::class, 'read']);
-Route::post('/findCountry',[MapController::class, 'findNearCountries']);
+Route::post('/findCountry',[MapController::class, 'findTwelveNeighboringCountries']);
+
+
 
 Route::get('/fill',[MapController::class, 'fill']);
 
