@@ -2,7 +2,10 @@
 
 namespace App\Http;
 
+use App\Http\Services\ScheduleService;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Support\Facades\Storage;
 
 class Kernel extends HttpKernel
 {
@@ -22,6 +25,23 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
+
+    /**
+     * @param Schedule $schedule
+     * @return void
+     */
+    protected function schedule(Schedule $schedule)
+    {
+        $schedule->command('demo:cron')
+            ->everyMinute()
+            ->timezone('Asia/Yerevan');
+        //$schedule->call(new ScheduleService())->everyMinute();
+    }
+
+    public function scheduleTimezone()
+    {
+        return 'Asia/Yerevan';
+    }
 
     /**
      * The application's route middleware groups.
