@@ -8372,8 +8372,13 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^8.0.2",
+<<<<<<< HEAD
         "ext-zip": "*",
         "ext-curl": "*"
+=======
+        "ext-curl": "*",
+        "ext-zip": "*"
+>>>>>>> 5d6381bfd09e7bf7a83f92d9e8a5fbfaed07a1c0
     },
     "platform-dev": [],
     "plugin-api-version": "2.2.0"

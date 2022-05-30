@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Data;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use function MongoDB\BSON\toJSON;
+use ZipArchive;
 
 class MapController extends Controller
 {
@@ -22,6 +23,7 @@ class MapController extends Controller
         foreach ($content as $item) {
             $arr[] = explode("\t", $item);
         }
+
         $this->store($arr);
     }
 
@@ -31,7 +33,6 @@ class MapController extends Controller
      */
     public function store(array $data)
     {
-        $start = microtime(true);
         $arr = [];
         foreach ($data as $key => $datum) {
             $arr[$key]['geoname_id'] = $datum[0];
@@ -54,19 +55,17 @@ class MapController extends Controller
             $arr[$key]['timezone'] = $datum[17];
             $arr[$key]['modification_date'] = $datum[18];
         }
+
         $arr = array_chunk($arr, 3400);
+
+        is_null(Data::first()) ?: Data::truncate();
+
         foreach ($arr as $item) {
             Data::insert($item);
         }
-        $time_elapsed_secs = microtime(true) - $start;
-        echo $time_elapsed_secs;
     }
 
 
-    /**
-     * @param Request $request
-     * @return array
-     */
     public function findTwelveNeighboringCountries(Request $request)
     {
         $givenCountry = Data::find($request->id);
@@ -88,7 +87,6 @@ class MapController extends Controller
             $angle = 2 * asin(sqrt(pow(sin($deltaLatitude / 2), 2) +
                     cos($givenCountryLatitude) * cos($latitude) * pow(sin($deltaLongitude / 2), 2)));
 
-
             $distance = round($angle * $earth_radius, 2);
 
             $CountriesDatas[] = [
@@ -100,14 +98,17 @@ class MapController extends Controller
         asort($CountriesDatas);
         $twelveNeighboringCountries = array_slice($CountriesDatas, 1, 20);
 
-
-        foreach($twelveNeighboringCountries as $key => $data)
-        {
-            $countryName = Data::find($data['country_id']);
-            $twelveNeighboringCountries[$key]['countryName'] = $countryName->name;
+        $country_ids = [];
+        foreach ($twelveNeighboringCountries as $item) {
+            $country_ids[] = $item['country_id'];
         }
 
-        return $twelveNeighboringCountries;
+        $countries = Data::whereIn('geoname_id', $country_ids)->pluck('name');
+
+        return new JsonResponse([
+            $countries,
+            200
+        ]);
     }
 
     /**
@@ -117,13 +118,14 @@ class MapController extends Controller
     {
         $savedPath = storage_path('app/public/RU.zip');
         copy('http://download.geonames.org/export/dump/RU.zip', $savedPath);
-        $zip = new \ZipArchive();
 
-        if ($zip->open($savedPath)){
-            $zip->extractTo(Storage::path('/public/geonamesData')); // working in local but not in production on an external disk
+        $zip = new ZipArchive;
+        if ($zip->open($savedPath)) {
+            $zip->extractTo(Storage::path('/public/geonamesData'));
             $zip->close();
             unlink($savedPath);
         }
+
         $this->read();
     }
 }

@@ -57,5 +57,4 @@ class Data extends Model
 
     public $timestamps = false;
     protected $primaryKey = 'geoname_id';
-
 }
