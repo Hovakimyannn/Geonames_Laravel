@@ -27,4 +27,4 @@ Route::post('/findCountry',[MapController::class, 'findTwelveNeighboringCountrie
 
 Route::get('/fill',[MapController::class, 'fill']);
 
-Route::post('/zip-download', [MapController::class, 'downloadZip']);
+Route::get('/zip-download', [MapController::class, 'downloadZip']);

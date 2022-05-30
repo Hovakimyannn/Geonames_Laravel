@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use ZipArchive;
 use function MongoDB\BSON\toJSON;
 
 class MapController extends Controller
@@ -118,7 +117,8 @@ class MapController extends Controller
     {
         $savedPath = storage_path('app/public/RU.zip');
         copy('http://download.geonames.org/export/dump/RU.zip', $savedPath);
-        $zip = new ZipArchive;
+        $zip = new \ZipArchive();
+
         if ($zip->open($savedPath)){
             $zip->extractTo(Storage::path('/public/geonamesData')); // working in local but not in production on an external disk
             $zip->close();
