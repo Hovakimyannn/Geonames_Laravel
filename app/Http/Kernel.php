@@ -2,7 +2,11 @@
 
 namespace App\Http;
 
+use App\Http\Services\ScheduleService;
+use DateTimeZone;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Support\Facades\Storage;
 
 class Kernel extends HttpKernel
 {
@@ -22,6 +26,28 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
+
+    /**
+     * @param Schedule $schedule
+     * @return void
+     */
+    protected function schedule(Schedule $schedule)
+    {
+        $schedule->command('demo:cron')
+            ->everyMinute()
+            ->sendOutputTo(Storage::path('/public/bbb.txt'));
+        //$schedule->call(new ScheduleService())->everyMinute();
+    }
+
+    /**
+     * Get the timezone that should be used by default for scheduled events.
+     *
+     * @return DateTimeZone|string|null
+     */
+    protected function scheduleTimezone(): DateTimeZone|string|null
+    {
+        return 'Asia/Yerevan';
+    }
 
     /**
      * The application's route middleware groups.

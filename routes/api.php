@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\MapController;
-use App\Http\Controllers\ZipController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,15 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::get('/read',[MapController::class, 'read']);
 Route::post('/findCountry',[MapController::class, 'findTwelveNeighboringCountries']);
 
 
-
 Route::get('/fill',[MapController::class, 'fill']);
-
-Route::post('/zip-download', [MapController::class, 'downloadZip']);
+Route::get('/zip-download', [MapController::class, 'downloadZip']);
