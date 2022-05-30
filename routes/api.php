@@ -15,9 +15,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/read',[MapController::class, 'read']);
-Route::post('/findCountry',[MapController::class, 'findTwelveNeighboringCountries']);
+Route::post('/findCountry', [MapController::class, 'findTwelveNeighboringCountries']);
 
-
-Route::get('/fill',[MapController::class, 'fill']);
-Route::get('/zip-download', [MapController::class, 'downloadZip']);

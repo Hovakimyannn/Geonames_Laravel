@@ -8,6 +8,9 @@ use ZipArchive;
 
 class ScheduleService
 {
+    /**
+     * @return void
+     */
     public function __invoke()
     {
         $savedPath = storage_path('app/public/RU.zip');
@@ -22,6 +25,9 @@ class ScheduleService
         $this->read();
     }
 
+    /**
+     * @return void
+     */
     private function read()
     {
         $content = Storage::get('/public/geonamesData/RU.txt');
@@ -35,6 +41,10 @@ class ScheduleService
         $this->store($arr);
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function store(array $data)
     {
         $arr = [];
@@ -68,5 +78,4 @@ class ScheduleService
             Data::insert($item);
         }
     }
-
 }

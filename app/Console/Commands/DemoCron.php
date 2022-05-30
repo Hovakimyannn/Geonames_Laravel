@@ -25,6 +25,6 @@ class DemoCron extends Command
      */
     public function handle()
     {
-       info('work');
+       $this->alert('work');
     }
 }

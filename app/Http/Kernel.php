@@ -28,18 +28,6 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * @param Schedule $schedule
-     * @return void
-     */
-    protected function schedule(Schedule $schedule)
-    {
-        $schedule->command('demo:cron')
-            ->everyMinute()
-            ->sendOutputTo(Storage::path('/public/bbb.txt'));
-        //$schedule->call(new ScheduleService())->everyMinute();
-    }
-
-    /**
      * Get the timezone that should be used by default for scheduled events.
      *
      * @return DateTimeZone|string|null
