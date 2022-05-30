@@ -28,16 +28,6 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * Get the timezone that should be used by default for scheduled events.
-     *
-     * @return DateTimeZone|string|null
-     */
-    protected function scheduleTimezone(): DateTimeZone|string|null
-    {
-        return 'Asia/Yerevan';
-    }
-
-    /**
      * The application's route middleware groups.
      *
      * @var array<string, array<int, class-string|string>>
