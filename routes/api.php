@@ -15,10 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/findCountry', [MapController::class, 'findTwelveNeighboringCountries']);
 
-Route::get('/read',[MapController::class, 'read']);
 
-Route::get('/getAllCache',[MapController::class, 'getAllFromRedis']);

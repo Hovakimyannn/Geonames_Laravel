@@ -55,35 +55,8 @@ class Data extends Model
 {
     use HasFactory;
 
-<<<<<<< HEAD
-=======
+
     public $timestamps = false;
     protected $primaryKey = 'geoname_id';
 
->>>>>>> c35623ffa81668a47048a56530f56ee928965def
-    protected $fillable = [
-        'geoname_id',
-        'name',
-        'asciiname',
-        'alternatenames',
-        'latitude',
-        'longitude',
-        'feature_class',
-        'feature_code',
-        'country_code',
-        'cc2',
-        'admin1_code',
-        'admin2_code',
-        'admin3_code',
-        'admin4_code',
-        'population',
-        'elevation',
-        'dem',
-<<<<<<< HEAD
-        'timezone',
-=======
-        'timezome',
->>>>>>> c35623ffa81668a47048a56530f56ee928965def
-        'modification_date',
-    ];
 }
