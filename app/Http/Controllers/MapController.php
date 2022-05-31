@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Data;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class MapController extends Controller
 {
@@ -14,6 +15,12 @@ class MapController extends Controller
      */
     public function findTwelveNeighboringCountries(Request $request)
     {
+        if ($dataFromRedis = json_decode(Redis::get($request->id))) {
+            return new JsonResponse([
+                $dataFromRedis,
+                200
+            ]);
+        }
         $givenCountry = Data::find($request->id);
         $givenCountryLatitude = deg2rad($givenCountry->latitude);
         $givenCountryLongitude = deg2rad($givenCountry->longitude);
@@ -50,6 +57,8 @@ class MapController extends Controller
         }
 
         $countries = Data::whereIn('geoname_id', $country_ids)->pluck('name');
+
+        Redis::set("$request->id", $countries->toJson());
 
         return new JsonResponse([
             $countries,
